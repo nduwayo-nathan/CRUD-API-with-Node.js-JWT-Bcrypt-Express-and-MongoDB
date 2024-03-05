@@ -1,20 +1,19 @@
 import  userModel from "../models/userModel.js";  
+import lodash from "lodash";
 
 
 const createUser= async(req,res)=>{
-    const {fname,lname,email,password,}=req.body;
+    // const {fname,lname,email,password}=req.body;
     try {
         
-        const newUser = new userModel({
-            fname,
-            lname,
-            email,
-            password
-        })
+        const newUser = new userModel(lodash.pick(req.body,['fname','lname','email','password']))
         if(newUser){
-        newUser.save()
+         await newUser.save()
         console.log("user created");
-        res.status(200).json({message:"new user created :",newUser:newUser})
+
+
+        
+        res.status(200).json({message:"new user created :",newUser:lodash.pick(newUser,['_id','fname','lname','email'])})
         }else{
             res.status(404).json({message:"no data  for the user"})
         }
